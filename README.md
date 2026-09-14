@@ -1,6 +1,6 @@
 # 不動産買取LP（固定資産税訴求）｜有限会社ジャパンサービス
 
-Meta広告「来年の固定資産税、払いますか？」のリンク先ランディングページ。GitHub Pagesで公開する。公開URL: https://japanservice-kanazawa.github.io/ （GitHub組織 japanservice-kanazawa ／ リポジトリ japanservice-kanazawa.github.io）
+Meta広告「来年の固定資産税、払いますか？」のリンク先ランディングページ。GitHub Pagesで公開する。公開URL: https://jap-ser.github.io/kaitori-lp/ （GitHub組織 jap-ser ／ リポジトリ kaitori-lp。相場サイト jap-ser.github.io とは別の箱）
 
 - `index.html` … LP本体（画像はすべて埋め込み済み。この1ファイルだけで動く）
 - `.nojekyll` … GitHub PagesのJekyll処理を無効化（そのまま置いておく）
