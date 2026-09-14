@@ -6,6 +6,9 @@
 <title>来年の固定資産税、払いますか？｜年内引渡しの不動産買取（金沢）｜有限会社ジャパンサービス</title>
 <meta name="description" content="「すぐに売れるか不安」な家へ。金沢市の有限会社ジャパンサービスが現状のまま直接買取。片付け不要・周囲に知られず・年内引渡しなら来年の固定資産税はかかりません。">
 <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Noto+Serif+JP:wght@600;700&family=Noto+Sans+JP:wght@400;500;700;800&display=swap">
+<!-- Google アナリティクス（GA4）測定ID: G-F6DE8DCGKB ／ プロパティ「ジャパンサービス 買取LP」（アカウント js） -->
+<script async src="https://www.googletagmanager.com/gtag/js?id=G-F6DE8DCGKB"></script>
+<script>window.dataLayer=window.dataLayer||[];function gtag(){dataLayer.push(arguments);}gtag('js',new Date());gtag('config','G-F6DE8DCGKB');</script>
 <script>
   /* ===== 運用で変える設定 ===== */
   window.LP_CONFIG = {
@@ -822,7 +825,9 @@
     });
 
     /* --- かんたん査定フォーム --- */
-    var FORM_ENDPOINT = ''; /* 自社サーバー / GAS / Formspree 等のPOST先URLを設定。空なら送信内容を画面に表示してLINEへ誘導 */
+    /* 送信先: Google Apps Script「買取LP 査定フォーム受付」（kota0206h7@gmail.com のスクリプト）。
+       受信内容はスプレッドシート「買取LP 査定依頼」に追記され、メール通知が届く。空にすると送信内容を画面に表示してLINEへ誘導する動きになる */
+    var FORM_ENDPOINT = 'https://script.google.com/macros/s/AKfycbze4WUc7JxkAOtDUk3HdGSvBujfpt23zY3w5bjJCJ1-vm5B3Nbeaxu_fnj4wW87HB1y/exec';
     var fw = document.getElementById('fwrap');
     if(fw){
       var steps = fw.querySelectorAll('.fstep');
@@ -877,8 +882,9 @@
           }
         }
         if(FORM_ENDPOINT){
-          fetch(FORM_ENDPOINT, {method:'POST', headers:{'Content-Type':'application/json'}, body: JSON.stringify(data)})
-            .then(function(r){ done(r.ok); }).catch(function(){ done(false); });
+          /* Google Apps Script宛は text/plain で送る（application/json だとブラウザの事前確認で失敗する） */
+          fetch(FORM_ENDPOINT, {method:'POST', headers:{'Content-Type':'text/plain;charset=utf-8'}, body: JSON.stringify(data), redirect:'follow'})
+            .then(function(r){ return r.json(); }).then(function(j){ done(!!(j && j.ok)); }).catch(function(){ done(false); });
         }else{ done(false); }
       });
     }
@@ -958,6 +964,28 @@
       if(isMobile){ try{ window.location.href=TEL; }catch(err){} }
     });
   });
+})();
+</script>
+<!-- GA4 イベント計測: tel_click / line_click / cta_click / form_submit / popup_view -->
+<script>
+(function(){
+  function ev(name, params){ try{ if(typeof gtag==='function') gtag('event', name, params||{}); }catch(e){} }
+  function where(a){ var s=a.closest('header,.hero,.fixbar,.nudge,.modal,.telbox,.last-cta,footer,section'); if(!s) return 'body'; return s.id || (s.className||'').split(' ')[0] || s.tagName.toLowerCase(); }
+  document.addEventListener('click', function(e){
+    var a = e.target.closest('a,button'); if(!a) return;
+    var href = a.getAttribute('href')||'';
+    if(href.indexOf('tel:')===0 || a.id==='tel-copy') ev('tel_click', {place: where(a), label: a.textContent.trim().slice(0,30)});
+    else if(href.indexOf('lin.ee')>-1) ev('line_click', {place: where(a)});
+    else if(a.id==='f-submit') ev('form_submit', {place:'form'});
+    else if(a.id==='mini-go') ev('cta_click', {place:'hero_form'});
+    else if(href.indexOf('#form')===0 || a.classList.contains('btn-cta')) ev('cta_click', {place: where(a)});
+  }, true);
+  if(window.MutationObserver){
+    [[document.getElementById('nudge'),'nudge'],[document.getElementById('exit-bg'),'exit_modal'],[document.getElementById('telbg'),'tel_sheet']].forEach(function(p){
+      if(!p[0]) return;
+      new MutationObserver(function(){ if(p[0].classList.contains('show')) ev('popup_view',{popup_type:p[1]}); }).observe(p[0],{attributes:true,attributeFilter:['class']});
+    });
+  }
 })();
 </script>
 </body>
