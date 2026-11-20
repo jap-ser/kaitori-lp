@@ -616,14 +616,15 @@
 
       <div class="fstep" data-step="2">
         <h3>物件はどこにありますか？</h3>
-        <p class="hint">番地までわからなくても大丈夫です。</p>
+        <p class="hint">町名までは入れてください。番地はわかる範囲で大丈夫です。</p>
         <label class="field"><span>市区町村<em>必須</em></span>
           <select name="city">
             <option value="">選んでください</option>
             <option>金沢市</option><option>野々市市</option><option>白山市</option><option>かほく市</option><option>津幡町</option><option>内灘町</option><option>小松市</option><option>能美市</option><option>加賀市</option><option>羽咋市</option><option>七尾市</option><option>石川県内その他</option><option>石川県外</option>
           </select></label>
         <p class="f-err" data-err="city">市区町村を選んでください。</p>
-        <label class="field"><span>町名・番地<i>任意</i></span><input type="text" name="addr" placeholder="例：西都2丁目162（わかる範囲で）"></label>
+        <label class="field"><span>町名・番地<em>必須</em></span><input type="text" name="addr" placeholder="例：西都2丁目162（番地がわからなければ町名まで）" autocomplete="street-address"></label>
+        <p class="f-err" data-err="addr">町名を入力してください（番地はわかる範囲で大丈夫です）。</p>
         <div class="f-nav"><button type="button" class="back" data-back>戻る</button><button type="button" class="next" data-next>次へ</button></div>
       </div>
 
@@ -845,7 +846,7 @@
       function valid(n){
         var ok = true;
         if(n===1){ ok = !!val('type'); err('type', !ok); }
-        if(n===2){ ok = !!val('city'); err('city', !ok); }
+        if(n===2){ var c = !!val('city'), d = val('addr').length >= 2; err('city', !c); err('addr', !d); ok = c && d; }
         if(n===3){ ok = !!val('status'); err('status', !ok); }
         if(n===4){ ok = !!val('wish'); err('wish', !ok); }
         if(n===5){ var a = !!val('name'), b = /\d{6,}/.test(val('tel').replace(/[^0-9]/g,'')); err('name', !a); err('tel', !b); ok = a && b; }
